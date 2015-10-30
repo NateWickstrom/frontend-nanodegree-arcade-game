@@ -65,21 +65,30 @@ Player.prototype.handleInput = function(direction) {
 
     switch(direction) {
         case 'left':
-            this.x--;
+            if (this.isValidMove(this.x - 1, this.y)) {
+                this.x--;
+            }
             break;
         case 'up':
-            this.y--;
+            if (this.isValidMove(this.x, this.y - 1)) {
+                this.y--;
+            }
             break;
         case 'right':
-            this.x++;
+            if (this.isValidMove(this.x + 1, this.y)) {
+                this.x++;
+            }
             break;
         case 'down':
-            this.y++;
+            if (this.isValidMove(this.x, this.y + 1)) {
+                this.y++;
+            }
             break;
     }
 
-    if (this.y == 0 || this.y > yMax || this.x < 0 || this.x > xMax) {
+    if (this.y == 0) {
         this.reset();
+        console.log("You Win!");
     }
 };
 Player.prototype.reset = function() {
@@ -93,6 +102,9 @@ Player.prototype.isHit = function(enemy) {
     var playerRight = this.x * titleWidth + titleWidth - playerSidePadding;
 
     return (enemy.y == player.y) && !(enemyRight < playerLeft || enemyLeft > playerRight);
+};
+Player.prototype.isValidMove = function(x, y) {
+    return y >= 0 && y <= yMax && x >=0 && x <= xMax;
 };
 
 // Now instantiate your objects.
