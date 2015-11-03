@@ -1,23 +1,25 @@
+'use strict';
+
 // canvas
-var canvasWidth = 505;
-var canvasHeight = 606;
+var CANVAS_WIDTH = 505;
+var CANVAS_HEIGHT = 606;
 
 // grid vars
-var titleWidth = 101;
-var titleHeight = 86;
-var xMax = 4;
-var yMax = 5;
+var TILE_WIDTH = 101;
+var TILE_HEIGHT = 86;
+var X_MAX = 4;
+var Y_MAX = 5;
 
 // player vars
-var playerYOffset = -50;
-var playerYStart = 5;
-var playerXStart = 2;
-var playerSidePadding = 20;
+var PLAYER_Y_OFFSET = -50;
+var PLAYER_Y_START = 5;
+var PLAYER_X_START = 2;
+var PLAYER_SIDE_PADDING = 20;
 
 // enemy vars
-var enemyYOffset = -32;
-var enemyWidth = 101;
-var enemyXStart = 0 - enemyWidth;
+var ENEMY_Y_OFFSET = -32;
+var ENEMY_WIDTH = 101;
+var ENEMY_X_START = 0 - ENEMY_WIDTH;
 
 
 // Enemies our player must avoid.
@@ -27,15 +29,15 @@ var Enemy = function() {
 };
 Enemy.prototype.update = function(dt) {
     this.x += dt * this.speed;
-    if(this.x > canvasWidth) {
+    if(this.x > CANVAS_WIDTH) {
         this.reset();
     }
 };
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y * titleHeight + enemyYOffset);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y * TILE_HEIGHT + ENEMY_Y_OFFSET);
 };
 Enemy.prototype.reset = function() {
-    this.x = enemyXStart;
+    this.x = ENEMY_X_START;
     this.updateLane();
     this.updateSpeed();
 };
@@ -52,12 +54,13 @@ var Player = function() {
     this.reset();
 };
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x * titleWidth, this.y * titleHeight + playerYOffset);
+    ctx.drawImage(Resources.get(this.sprite), this.x * TILE_WIDTH, this.y * TILE_HEIGHT + PLAYER_Y_OFFSET);
 };
 Player.prototype.update = function(dt) {
+    var self = this;
     allEnemies.forEach(function(enemy) {
-        if (player.isHit(enemy)) {
-            player.reset();
+        if (self.isHit(enemy)) {
+            self.reset();
         }
     });
 };
@@ -92,19 +95,19 @@ Player.prototype.handleInput = function(direction) {
     }
 };
 Player.prototype.reset = function() {
-    this.x = playerXStart;
-    this.y = playerYStart;
+    this.x = PLAYER_X_START;
+    this.y = PLAYER_Y_START;
 };
 Player.prototype.isHit = function(enemy) {
     var enemyLeft = enemy.x;
-    var enemyRight = enemy.x + enemyWidth;
-    var playerLeft = this.x * titleWidth + playerSidePadding;
-    var playerRight = this.x * titleWidth + titleWidth - playerSidePadding;
+    var enemyRight = enemy.x + ENEMY_WIDTH;
+    var playerLeft = this.x * TILE_WIDTH + PLAYER_SIDE_PADDING;
+    var playerRight = this.x * TILE_WIDTH + TILE_WIDTH - PLAYER_SIDE_PADDING;
 
     return (enemy.y == player.y) && !(enemyRight < playerLeft || enemyLeft > playerRight);
 };
 Player.prototype.isValidMove = function(x, y) {
-    return y >= 0 && y <= yMax && x >=0 && x <= xMax;
+    return y >= 0 && y <= Y_MAX && x >=0 && x <= X_MAX;
 };
 
 // Now instantiate your objects.
